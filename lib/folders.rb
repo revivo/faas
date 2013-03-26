@@ -25,12 +25,11 @@ class Folders
   end
 
   def self.create_folder(apikey)
-    headers 'Content-Type' => "application/json"
-
     unless ApiKey.exists?(apikey)
       ApiKey.create({:apikey => apikey})
       # create root folders for the api key user identified by the apikey
       unless FileTest::directory?(File.join(DATA_ROOT, apikey))
+        Dir::mkdir(File.join(DATA_ROOT)) unless FileTest::directory?(File.join(DATA_ROOT))
         Dir::mkdir(File.join(DATA_ROOT, apikey))
         # create unique folders
         folder = generate_uuid()

@@ -2,7 +2,7 @@ FaaS::Application.routes.draw do
 
   resources :folders
   match 'apikey' => 'folders#get_api_key', :as => :apikey
-  match 'folders/:apikey' => 'folders#create_folder'
+  match 'folders/:id/create' => 'folders#create_folder'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
