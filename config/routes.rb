@@ -1,4 +1,7 @@
 FaaS::Application.routes.draw do
+
+  post "folders/search"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

@@ -8,3 +8,5 @@ FaaS::Application.initialize!
 ENV['RAILS_ENV'] = 'development'
 
 DATA_ROOT = '../data/folders'
+ENV['faas_api_version'] = 'v1.0'
+ENV['faas_instance_url'] = 'http://splinter.mygazoo.com'
