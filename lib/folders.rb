@@ -36,11 +36,13 @@ class Folders
             :message => "Missing root folder. Probably you didn't create it in first place."
         }
       else
-        files = Dir::entries(File.join(DATA_ROOT, apikey))
+        folders = Dir.glob(File.join(DATA_ROOT, apikey, '*')).select {|f| File.directory? f} | []
+        folder_count = folders.length
         options =  {
             :apikey => apikey,
-            :files => files,
-            :message => "List of all files under the directory."
+            :folder_count => folder_count,
+            :folders => folders,
+            :message => "Listing of all folders for the requester."
         }
       end
     end
@@ -48,57 +50,41 @@ class Folders
 
   def self.create_folder(apikey)
     unless ApiKey.exists?({:apikey => apikey})
-      ApiKey.create({:apikey => apikey})
-      # create root folders for the api key user identified by the apikey
-      unless FileTest::directory?(File.join(DATA_ROOT, apikey))
-        Dir::mkdir(File.join(DATA_ROOT)) unless FileTest::directory?(File.join(DATA_ROOT))
+      options = {
+          :apikey => apikey,
+          :message => "Api key not found. Folder couldn't be created."
+      }
+      return options
+    else
+      # api key exists in db
+      # should also exist in file path
+      # still check
+      if FileTest::directory?(DATA_ROOT) && FileTest::directory?(File.join(DATA_ROOT, apikey))
+        # create unique folders
+        folder = generate_uuid()
+        # add a folders under apikey_root folders
+        Dir::mkdir(File.join(DATA_ROOT, apikey, folder))
+        options = {
+            :apikey => apikey,
+            :folder => folder,
+            :message => "Folder successfully created."
+        }
+        return options
+      else
+        # create apikey root dir
+        Dir::mkdir(DATA_ROOT) unless FileTest::directory?(File.join(DATA_ROOT))
         Dir::mkdir(File.join(DATA_ROOT, apikey))
         # create unique folders
         folder = generate_uuid()
         # add a folders under apikey_root folders
         Dir::mkdir(File.join(DATA_ROOT, apikey, folder))
         options = {
-          :apikey => apikey,
-          :folder => folder,
-          :message => "Folder successfully created."
+            :apikey => apikey,
+            :folder => folder,
+            :message => "Folder successfully created."
         }
         return options
-      else
-        # api key exists in db
-        # should also exist in file path
-        # still check
-        if FileTest::directory?(File.join(DATA_ROOT, apikey))
-          # create unique folders
-          folder = generate_uuid()
-          # add a folders under apikey_root folders
-          Dir::mkdir(File.join(DATA_ROOT, apikey, folder))
-          options = {
-              :apikey => apikey,
-              :folder => folder,
-              :message => "Folder successfully created."
-          }
-          return options
-        else
-          # create apikey root dir
-          Dir::mkdir(File.join(DATA_ROOT, apikey))
-          # create unique folders
-          folder = generate_uuid()
-          # add a folders under apikey_root folders
-          Dir::mkdir(File.join(DATA_ROOT, apikey, folder))
-          options = {
-              :apikey => apikey,
-              :folder => folder,
-              :message => "Folder successfully created."
-          }
-          return options
-        end
       end
-    else
-      options = {
-          :apikey => apikey,
-          :message => "Api key not found. Folder couldn't be created."
-      }
-      return options
     end
   end
 end
