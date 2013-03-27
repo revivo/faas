@@ -14,7 +14,6 @@ class Folders
   end
 
   def self.api_key
-    headers 'Content-Type' => "application/json"
     kkey = generate_api_key()
     ApiKey.create({:apikey => kkey})
     options = {
@@ -24,8 +23,31 @@ class Folders
     return options
   end
 
+  def self.list_all_folders(apikey)
+    unless ApiKey.exists?({:apikey => apikey})
+      options = {
+          :apikey => apikey,
+          :message => "Api key not found."
+      }
+    else
+      unless FileTest::directory?(File.join(DATA_ROOT, apikey))
+        options =   {
+            :apikey => apikey,
+            :message => "Missing root folder. Probably you didn't create it in first place."
+        }
+      else
+        files = Dir::entries(File.join(DATA_ROOT, apikey))
+        options =  {
+            :apikey => apikey,
+            :files => files,
+            :message => "List of all files under the directory."
+        }
+      end
+    end
+  end
+
   def self.create_folder(apikey)
-    unless ApiKey.exists?(apikey)
+    unless ApiKey.exists?({:apikey => apikey})
       ApiKey.create({:apikey => apikey})
       # create root folders for the api key user identified by the apikey
       unless FileTest::directory?(File.join(DATA_ROOT, apikey))
@@ -37,7 +59,7 @@ class Folders
         Dir::mkdir(File.join(DATA_ROOT, apikey, folder))
         options = {
           :apikey => apikey,
-          :folders => folder,
+          :folder => folder,
           :message => "Folder successfully created."
         }
         return options
@@ -52,7 +74,7 @@ class Folders
           Dir::mkdir(File.join(DATA_ROOT, apikey, folder))
           options = {
               :apikey => apikey,
-              :folders => folder,
+              :folder => folder,
               :message => "Folder successfully created."
           }
           return options
@@ -65,7 +87,7 @@ class Folders
           Dir::mkdir(File.join(DATA_ROOT, apikey, folder))
           options = {
               :apikey => apikey,
-              :folders => folder,
+              :folder => folder,
               :message => "Folder successfully created."
           }
           return options
