@@ -15,11 +15,11 @@ ENV['faas_api_version'] = 'v1.0'
 ENV['faas_instance_url'] = 'http://localhost'
 
 
-unless File.exists?('/var/log/faas/faas.log') && File.writable?('/var/log/faas/faas.log')
+unless File.exists?('../log/faas.log') && File.writable?('../log/faas.log')
   begin
-    Dir.mkdir('/var/log/faas') unless FileTest::directory?('/var/log/faas')
-    FileUtils.touch('/var/log/faas/faas.log')
-    Rails.logger = Logger.new('/var/log/faas/faas.log')
+    Dir.mkdir('../log') unless FileTest::directory?('../log')
+    FileUtils.touch('../log/faas.log')
+    Rails.logger = Logger.new('../log/faas.log')
   rescue => e
     Rails.logger = Logger.new(STDOUT)
     p '###' + e.inspect
