@@ -29,7 +29,7 @@ class FoldersController < ApplicationController
        :copyright => 'Rearden Commerce Inc.',
        :date => '26 March 2013',
        :devel => 'Internal Apps',
-       :email => 'dib.ghosh@deem.com',
+       :email => 'InternalApps@deem.com',
        :description => '
         Pitstop day project.
         A simple Rails 3.2 app for creating folders.Think of it as our internal buckets similar to Amazon S3.
