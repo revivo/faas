@@ -22,6 +22,11 @@ class FoldersController < ApplicationController
     render :json => @json
   end
 
+  def set_content
+    @json = Folders.store_data_in_folder(params[:id], {'folder_name' => params[:folder_name], 'data' => params[:message]})
+    render :json => @json
+  end
+
   def show_api_doc
    @json = {
        :appName => 'FaaS(Folder as a service)',

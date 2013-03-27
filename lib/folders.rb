@@ -1,13 +1,9 @@
 require 'utils'
 require 'json'
-require 'httparty'
+require 'logger'
 
 # Folders class does all the heavy lifting of this app
 class Folders
-  include HTTParty
-  format :json
-  default_params :output => 'json'
-  base_uri 'splinter.com'
 
   def self.root_url
     @root_url = "http://localhost:3000" #File.join(ENV['faas_instance_url'], ENV['faas_api_version'])
@@ -49,6 +45,7 @@ class Folders
   end
 
   def self.create_folder(apikey)
+    logger.info "create_folder with api key = (#apikey.inspect)"
     unless ApiKey.exists?({:apikey => apikey})
       options = {
           :apikey => apikey,
@@ -59,7 +56,7 @@ class Folders
       # api key exists in db
       # should also exist in file path
       # still check
-      if FileTest::directory?(DATA_ROOT) && FileTest::directory?(File.join(DATA_ROOT, apikey))
+      if FileTest::directory?(DATA_ROOT) and FileTest::directory?(File.join(DATA_ROOT, apikey))
         # create unique folders
         folder = generate_uuid()
         # add a folders under apikey_root folders
@@ -84,6 +81,61 @@ class Folders
             :message => "Folder successfully created."
         }
         return options
+      end
+    end
+  end
+
+  # store 141 char limited string in folder
+  def self.store_data_in_folder(apikey, opts = {})
+    #logger.info "store_data_in_folder with api key = (#apikey.inspect) and opts = (#opts.inspect)"
+    unless ApiKey.exists?({:apikey => apikey})
+      return {
+          :apikey => apikey,
+          :message => "Api key not found."
+      }
+    end
+    if opts.nil? or opts.blank?
+        return   {
+            :apikey => apikey,
+            :message => "Missing arguments."
+        }
+    end
+    if !opts.has_key?('folder_name') or opts['folder_name'].nil? or opts['folder_name'].blank?
+        return   {
+            :apikey => apikey,
+            :message => "Please specify a valid folder name to store data."
+        }
+    end
+    if !opts.has_key?('data') or opts['data'].nil? or opts['data'].blank? or opts['data'].length > GLOBALS::MAX_MESSAGE_LENGTH
+      return   {
+          :apikey => apikey,
+          :message => "Data should be non empty and 141 character limited."
+      }
+    end
+    unless FileTest::directory?(DATA_ROOT) and FileTest::directory?(File.join(DATA_ROOT, apikey)) and FileTest::directory?(File.join(DATA_ROOT, apikey, opts['folder_name']))
+      return   {
+            :apikey => apikey,
+            :message => "Folder doesn't exist"
+        }
+    else
+      data_file = generate_uuid()
+      path = File.join(DATA_ROOT, apikey, opts['folder_name'], data_file)
+      begin
+        File.open(path, "w"){|file| file.write(opts['data'])}
+        #logger.info "data stored in file."
+        return   {
+            :apikey => apikey,
+            :folder => opts['folder_name'],
+            :file => data_file,
+            :message => "Successfully stored message in folder."
+        }
+      rescue  => e
+        p e.inspect
+        #logger.debug e.inspect
+        return   {
+            :apikey => apikey,
+            :message => "Failed to write data to folder (#opts['folder_name']) due to exception."
+        }
       end
     end
   end

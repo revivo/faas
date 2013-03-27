@@ -1,9 +1,11 @@
 FaaS::Application.routes.draw do
 
-  root :to => redirect("/apidoc")
+  root :to => redirect('/apidoc')
   resources :folders
+
   match 'apikey' => 'folders#get_api_key', :as => :apikey
   match 'folders/:id/create' => 'folders#create_folder'
+  match 'folders/:id/store/:folder_name/:message' => 'folders#set_content'
   match 'apidoc' => 'folders#show_api_doc', :as => :apidoc
 
   # The priority is based upon order of creation:
