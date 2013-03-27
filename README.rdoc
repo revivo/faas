@@ -34,11 +34,17 @@ APP_ROOT/folders/
 
 Method                             Example URL 
 create api key           https://blooming-tundra-4394.herokuapp.com/apikey
+
 create folder            https://blooming-tundra-4394.herokuapp.com/folders/<apikey>/create
+
 list all folders         https://blooming-tundra-4394.herokuapp.com/folders/<apikey>
+
 store content in folder  https://blooming-tundra-4394.herokuapp.com/folders/<apikey>/store/<folder_name>/<message>
+
 view content of folder   TODO 
+
 delete folder            TODO
+
 
 == Developer zone
 
