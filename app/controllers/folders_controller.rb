@@ -36,9 +36,12 @@ class FoldersController < ApplicationController
        :devel => 'Internal Apps',
        :email => 'InternalApps@deem.com',
        :description => '
-        Pitstop day project.
-        A simple Rails 3.2 app for creating folders.Think of it as our internal buckets similar to Amazon S3.
-        It is UI less and only accessible through REST at this point. Yes, the *not* so much exciting Rails welcome page still greets you when accessing the default route.
+        Pitstop day project commemorating the divinity of folders.
+        A simple Rails 3.2 app which creates folders and allows you to store anything (read upto 141 characters).
+        Why 141 characters? Because we are not twitter :).
+        Think of it as our internal buckets similar to Amazon S3.
+        It is UI less and only accessible through REST at this point.
+        Yes, the *not* so much exciting json will greets you for some time till I make it UI-ful.
         User identification is via API Keys only.
         FaaS uses Sqlite3 (dev) and pg(prod) and creates just one table for storing api keys.
         All folders are created under APP_ROOT/folders.',
@@ -46,7 +49,8 @@ class FoldersController < ApplicationController
        :apidoc => {
             'create api key' => 'https://blooming-tundra-4394.herokuapp.com/apikey',
             'create folder' => 'https://blooming-tundra-4394.herokuapp.com/folders/<apikey>/create',
-            'list all folders'=> 'https://blooming-tundra-4394.herokuapp.com/folders/<apikey>'
+            'list all folders'=> 'https://blooming-tundra-4394.herokuapp.com/folders/<apikey>',
+            'store 141 char data in folder' => 'https://blooming-tundra-4394.herokuapp.com/folders/<apikey>/store/<folder_name>/<message>'
        }
    }
    render :json => @json
