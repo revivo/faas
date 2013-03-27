@@ -1,4 +1,4 @@
-== Welcome to FaaS (Folder as a platform)
+== Welcome to FaaS (Folder as a service)
 Copyright: © 1999–2013 Rearden Commerce, Inc. All rights reserved.
 
 Even though Folder as a platform sounds  way cooler I am resisting my temptation to name it folder as a platform. Think of FaaS as Amazon S3 killer ( just kidding).
