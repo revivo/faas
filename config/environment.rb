@@ -5,7 +5,7 @@ require File.expand_path('../application', __FILE__)
 FaaS::Application.initialize!
 
 # set app env
-ENV['RAILS_ENV'] = 'development'
+ENV['RAILS_ENV'] = 'production'
 
 DATA_ROOT = './folders'
 ENV['faas_api_version'] = 'v1.0'
